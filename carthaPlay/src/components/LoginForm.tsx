@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, GraduationCap, Lock, Mail } from 'lucide-react';
-
+import axios from 'axios';
 interface LoginFormProps {
   role: 'teacher' | 'student';
 }
@@ -12,13 +12,28 @@ export const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
     email: '',
     password: '',
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (role === 'teacher') {
-      navigate('/teacher/dashboard');
-    } else {
-      navigate('/student/dashboard');
+    setError(null);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      if (response.data.message === 'success') {
+        localStorage.setItem('token', response.data.token);
+        if (role === 'teacher') {
+          navigate('/teacher/dashboard');
+        } else {
+          navigate('/student/dashboard');
+        }
+      }
+    } catch (err: any) {
+      if (err.response && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 

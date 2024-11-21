@@ -11,7 +11,7 @@ import { StudentDashboard } from './pages/StudentDashboard';
 import { TeacherTracking } from './pages/TeacherTracking';
 import { CreateGameForm } from './components/CreateGameForm';
 import { GameList } from './components/GameList';
-
+import GameApp from './frontend/carthaplay/src/GameApp';
 function App() {
   return (
     <Router>
@@ -23,8 +23,9 @@ function App() {
         <Route path="/teacher/create-game" element={<CreateGameForm />} />
         <Route path="/teacher/games" element={<GameList role="teacher" />} />
         <Route path="/teacher/tracking" element={<TeacherTracking />} />
-        <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/dashboard" element={<StudentDashboard />}/>
         <Route path="/student/games" element={<GameList role="student" />} />
+        <Route path="/game" element={<GameApp />} />
       </Routes>
     </Router>
   );

@@ -22,16 +22,33 @@ export const CreateGameForm = () => {
   const [currentQuestion, setCurrentQuestion] = useState<Question>({
     id: '',
     question: '',
-    options: ['', '', '', ''],
+    options: ['', '', '',],
     correctAnswer: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 1) {
-      setStep(2);
+    if (step === 2) {
+      try {
+        const response = await fetch('http://localhost:5000/api/question/questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questions }),
+        });
+        console.log(response)
+
+        if (response.ok) {
+          alert('Questions added successfully!');
+          navigate('/game');
+        } else {
+          alert('Error adding questions');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Server error!');
+      }
     } else {
-      navigate('/teacher/games');
+      setStep(2);
     }
   };
 
@@ -41,7 +58,7 @@ export const CreateGameForm = () => {
       setCurrentQuestion({
         id: '',
         question: '',
-        options: ['', '', '', ''],
+        options: ['', '', ''],
         correctAnswer: '',
       });
     }
@@ -50,6 +67,7 @@ export const CreateGameForm = () => {
   const removeQuestion = (id: string) => {
     setQuestions(questions.filter(q => q.id !== id));
   };
+  console.log(questions)
 
   return (
     <div className="max-w-3xl mx-auto">
