@@ -1,11 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Gamepad2, 
-  Library, 
-  BarChart3,
-  ChevronRight
-} from 'lucide-react';
+import { Gamepad2, Library, BarChart3, ChevronRight } from 'lucide-react';
 
 export const TeacherDashboard = () => {
   const navigate = useNavigate();
@@ -18,7 +13,7 @@ export const TeacherDashboard = () => {
       path: '/teacher/create-game',
       gradient: 'from-indigo-600 to-purple-600',
       iconBg: 'bg-indigo-100',
-      iconColor: 'text-indigo-600'
+      iconColor: 'text-indigo-600',
     },
     {
       title: 'Jeux existants',
@@ -27,7 +22,7 @@ export const TeacherDashboard = () => {
       path: '/teacher/games',
       gradient: 'from-purple-600 to-pink-600',
       iconBg: 'bg-purple-100',
-      iconColor: 'text-purple-600'
+      iconColor: 'text-purple-600',
     },
     {
       title: 'Suivi des classes',
@@ -36,7 +31,7 @@ export const TeacherDashboard = () => {
       path: '/teacher/tracking',
       gradient: 'from-pink-600 to-rose-600',
       iconBg: 'bg-pink-100',
-      iconColor: 'text-pink-600'
+      iconColor: 'text-pink-600',
     },
   ];
 
@@ -56,20 +51,24 @@ export const TeacherDashboard = () => {
               onClick={() => navigate(option.path)}
               className="group relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 text-left transition-all duration-300 hover:scale-[1.02]"
             >
-              <div className={`absolute inset-0 bg-gradient-to-r ${option.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`} />
-              
-              <div className={`w-20 h-20 mb-6 rounded-2xl ${option.iconBg} flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300`}>
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${option.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}
+              />
+
+              <div
+                className={`w-20 h-20 mb-6 rounded-2xl ${option.iconBg} flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300`}
+              >
                 <option.icon className={`h-10 w-10 ${option.iconColor}`} />
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {option.title}
               </h3>
-              <p className="text-gray-600 mb-4">
-                {option.description}
-              </p>
+              <p className="text-gray-600 mb-4">{option.description}</p>
 
-              <div className={`flex items-center text-sm font-medium bg-gradient-to-r ${option.gradient} bg-clip-text text-transparent`}>
+              <div
+                className={`flex items-center text-sm font-medium bg-gradient-to-r ${option.gradient} bg-clip-text text-transparent`}
+              >
                 Commencer
                 <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </div>

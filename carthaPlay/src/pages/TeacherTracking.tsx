@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, ChevronRight } from 'lucide-react';
+import { Users, ChevronRight, Plus } from 'lucide-react';
+import { CreateClassForm } from '../components/CreateClassForm';
 
 interface Class {
   id: string;
@@ -11,23 +12,40 @@ interface Class {
 
 export const TeacherTracking = () => {
   const navigate = useNavigate();
-  const [classes] = useState<Class[]>([
-    { id: '1', name: '4A', level: '4ème année', studentsCount: 25 },
-    { id: '2', name: '4B', level: '4ème année', studentsCount: 23 },
-    { id: '3', name: '5A', level: '5ème année', studentsCount: 24 },
-    { id: '4', name: '5B', level: '5ème année', studentsCount: 22 },
-    { id: '5', name: '6A', level: '6ème année', studentsCount: 26 },
-    { id: '6', name: '6B', level: '6ème année', studentsCount: 25 },
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [classes, setClasses] = useState<Class[]>([
+    { id: '1', name: '4A', level: 'group 1', studentsCount: 25 },
+    { id: '2', name: '5A', level: 'group 2', studentsCount: 24 },
+    { id: '3', name: '6A', level: 'group 3', studentsCount: 26 },
   ]);
+
+  const handleCreateClass = (classData: any) => {
+    const newClass = {
+      id: (classes.length + 1).toString(),
+      name: classData.name,
+      level: `${classData.level}ème année`,
+      studentsCount: parseInt(classData.capacity),
+    };
+    setClasses([...classes, newClass]);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-12">
-          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            Suivi des classes
-          </span>
-        </h1>
+        <div className="flex justify-between items-center mb-12">
+          <h1 className="text-3xl font-bold">
+            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Suivi des classes
+            </span>
+          </h1>
+          <button
+            onClick={() => setShowCreateForm(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-colors duration-200"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Créer une classe</span>
+          </button>
+        </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {classes.map((classItem) => (
@@ -57,6 +75,13 @@ export const TeacherTracking = () => {
             </button>
           ))}
         </div>
+
+        {showCreateForm && (
+          <CreateClassForm
+            onClose={() => setShowCreateForm(false)}
+            onSubmit={handleCreateClass}
+          />
+        )}
       </div>
     </div>
   );

@@ -9,8 +9,10 @@ interface LoginFormProps {
 export const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    FirstName:'',
+    SecondName:'',
+    Email: '',
+    Password: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,18 +48,38 @@ export const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
 
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
-              Connexion {role === 'teacher' ? 'Formateur' : 'Apprenant'}
+              Connexion {role === 'teacher' ? 'Enseignant' : 'Élève'}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors duration-200" />
+                <input
+                  type="name"
+                  value={formData.FirstName}
+                  onChange={(e) => setFormData({ ...formData, FirstName: e.target.value })}
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-600 focus:ring focus:ring-indigo-200 transition-all duration-200"
+                  placeholder="FirstName"
+                  required
+                />
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors duration-200" />
+                <input
+                  type="name"
+                  value={formData.SecondName}
+                  onChange={(e) => setFormData({ ...formData, SecondName: e.target.value })}
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-600 focus:ring focus:ring-indigo-200 transition-all duration-200"
+                  placeholder="SecondName"
+                  required
+                />
+              </div>
               <div className="relative group">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors duration-200" />
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-600 focus:ring focus:ring-indigo-200 transition-all duration-200"
                   placeholder="Adresse email"
                   required
@@ -69,9 +91,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
                 <input
                   type="password"
                   value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-600 focus:ring focus:ring-indigo-200 transition-all duration-200"
                   placeholder="Mot de passe"
                   required
@@ -82,7 +102,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ role }) => {
                 type="submit"
                 className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium transform hover:translate-y-[-2px] hover:shadow-lg transition-all duration-200"
               >
-                Se connecter
+                créer 
               </button>
             </form>
           </div>

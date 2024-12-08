@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Target, School, Lightbulb, Plus, X, Save, ChevronRight } from 'lucide-react';
+import {
+  BookOpen,
+  Target,
+  School,
+  Lightbulb,
+  Plus,
+  X,
+  Save,
+  ChevronRight,
+  Ear,
+  GraduationCap,
+} from 'lucide-react';
 
 interface Question {
   id: string;
   question: string;
   options: string[];
   correctAnswer: string;
+  level: string; // Added level field
 }
 
 export const CreateGameForm = () => {
@@ -17,57 +29,49 @@ export const CreateGameForm = () => {
     lesson: '',
     difficulty: '',
     level: '',
+    targetAudience: 'standard',
   });
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<Question>({
     id: '',
     question: '',
-    options: ['', '', '',],
+    options: ['', '', ''],
     correctAnswer: '',
+    level: 'easy', // Default level
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 2) {
-      try {
-        const response = await fetch('http://localhost:5000/api/question/questions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ questions }),
-        });
-        console.log(response)
-
-        if (response.ok) {
-          alert('Questions added successfully!');
-          navigate('/game');
-        } else {
-          alert('Error adding questions');
-        }
-      } catch (error) {
-        console.error(error);
-        alert('Server error!');
-      }
-    } else {
+    if (step === 1) {
       setStep(2);
+    } else {
+      navigate('/teacher/games');
     }
   };
 
   const addQuestion = () => {
-    if (currentQuestion.question && currentQuestion.options.every(opt => opt) && currentQuestion.correctAnswer) {
-      setQuestions([...questions, { ...currentQuestion, id: Date.now().toString() }]);
+    if (
+      currentQuestion.question &&
+      currentQuestion.options.every((opt) => opt) &&
+      currentQuestion.correctAnswer
+    ) {
+      setQuestions([
+        ...questions,
+        { ...currentQuestion, id: Date.now().toString() },
+      ]);
       setCurrentQuestion({
         id: '',
         question: '',
         options: ['', '', ''],
         correctAnswer: '',
+        level: 'easy',
       });
     }
   };
 
   const removeQuestion = (id: string) => {
-    setQuestions(questions.filter(q => q.id !== id));
+    setQuestions(questions.filter((q) => q.id !== id));
   };
-  console.log(questions)
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -75,20 +79,26 @@ export const CreateGameForm = () => {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between mb-2">
-            <span className="text-sm font-medium text-gray-600">Progression</span>
-            <span className="text-sm font-medium text-indigo-600">{step}/2</span>
+            <span className="text-sm font-medium text-gray-600">
+              Progression
+            </span>
+            <span className="text-sm font-medium text-indigo-600">
+              {step}/2
+            </span>
           </div>
           <div className="h-2 bg-gray-200 rounded-full">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full transition-all duration-500"
-              style={{ width: `${(step/2) * 100}%` }}
+              style={{ width: `${(step / 2) * 100}%` }}
             ></div>
           </div>
         </div>
 
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
           <span className="gradient-text">
-            {step === 1 ? 'Créer un nouveau jeu éducatif' : 'Ajouter des questions'}
+            {step === 1
+              ? 'Créer un nouveau jeu éducatif'
+              : 'Ajouter des questions'}
           </span>
         </h2>
 
@@ -97,17 +107,19 @@ export const CreateGameForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative group">
                 <BookOpen className="absolute left-3 top-[2.1rem] transform w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors duration-200" />
-                <label className="form-label">Matière</label>
+                <label className="form-label">Limite de fautes</label>
                 <select
                   value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject: e.target.value })
+                  }
                   className="form-select pl-12"
                   required
                 >
-                  <option value="">Sélectionner une matière</option>
-                  <option value="math">Mathématiques</option>
-                  <option value="french">Français</option>
-                  <option value="science">Sciences</option>
+                  <option value="">Sélectionner limite de fautes</option>
+                  <option value="facile">1</option>
+                  <option value="moyenne">3</option>
+                  <option value="difficile">5</option>
                 </select>
               </div>
 
@@ -116,11 +128,16 @@ export const CreateGameForm = () => {
                 <label className="form-label">Niveau scolaire</label>
                 <select
                   value={formData.level}
-                  onChange={(e) => setFormData({ ...formData, level: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, level: e.target.value })
+                  }
                   className="form-select pl-12"
                   required
                 >
                   <option value="">Sélectionner un niveau</option>
+                  <option value="1">1ère année</option>
+                  <option value="2">2ème année</option>
+                  <option value="3">3ème année</option>
                   <option value="4">4ème année</option>
                   <option value="5">5ème année</option>
                   <option value="6">6ème année</option>
@@ -129,13 +146,15 @@ export const CreateGameForm = () => {
 
               <div className="relative group">
                 <Lightbulb className="absolute left-3 top-[2.1rem] transform w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors duration-200" />
-                <label className="form-label">Leçon</label>
+                <label className="form-label">Titre du jeu</label>
                 <input
                   type="text"
                   value={formData.lesson}
-                  onChange={(e) => setFormData({ ...formData, lesson: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lesson: e.target.value })
+                  }
                   className="form-input pl-12"
-                  placeholder="Titre de la leçon"
+                  placeholder="Titre du jeu"
                   required
                 />
               </div>
@@ -145,7 +164,9 @@ export const CreateGameForm = () => {
                 <label className="form-label">Niveau de difficulté</label>
                 <select
                   value={formData.difficulty}
-                  onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, difficulty: e.target.value })
+                  }
                   className="form-select pl-12"
                   required
                 >
@@ -153,6 +174,22 @@ export const CreateGameForm = () => {
                   <option value="easy">Facile</option>
                   <option value="medium">Moyen</option>
                   <option value="hard">Difficile</option>
+                </select>
+              </div>
+
+              <div className="relative group md:col-span-2">
+                <Ear className="absolute left-3 top-[2.1rem] transform w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors duration-200" />
+                <label className="form-label">Public cible</label>
+                <select
+                  value={formData.targetAudience}
+                  onChange={(e) =>
+                    setFormData({ ...formData, targetAudience: e.target.value })
+                  }
+                  className="form-select pl-12"
+                  required
+                >
+                  <option value="standard">Personne standard</option>
+                  <option value="deaf">Personne sourde</option>
                 </select>
               </div>
             </div>
@@ -170,14 +207,29 @@ export const CreateGameForm = () => {
             {/* Questions List */}
             <div className="space-y-4">
               {questions.map((q, index) => (
-                <div key={q.id} className="bg-gray-50 rounded-xl p-4 relative group">
+                <div
+                  key={q.id}
+                  className="bg-gray-50 rounded-xl p-4 relative group"
+                >
                   <button
                     onClick={() => removeQuestion(q.id)}
                     className="absolute right-2 top-2 p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   >
                     <X className="h-5 w-5" />
                   </button>
-                  <h4 className="font-medium text-gray-900 mb-2">Question {index + 1}</h4>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium text-gray-900">
+                      Question {index + 1}
+                    </h4>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      q.level === 'easy' ? 'bg-green-100 text-green-800' :
+                      q.level === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {q.level === 'easy' ? 'Facile' :
+                       q.level === 'medium' ? 'Moyen' : 'Difficile'}
+                    </span>
+                  </div>
                   <p className="text-gray-600 mb-2">{q.question}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {q.options.map((option, i) => (
@@ -199,14 +251,21 @@ export const CreateGameForm = () => {
 
             {/* Add New Question Form */}
             <div className="bg-white rounded-xl p-6 border-2 border-dashed border-gray-200 hover:border-indigo-300 transition-colors duration-200">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Nouvelle Question</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Nouvelle Question
+              </h3>
               <div className="space-y-4">
                 <div>
                   <label className="form-label">Question</label>
                   <input
                     type="text"
                     value={currentQuestion.question}
-                    onChange={(e) => setCurrentQuestion({ ...currentQuestion, question: e.target.value })}
+                    onChange={(e) =>
+                      setCurrentQuestion({
+                        ...currentQuestion,
+                        question: e.target.value,
+                      })
+                    }
                     className="form-input"
                     placeholder="Entrez votre question"
                   />
@@ -222,7 +281,10 @@ export const CreateGameForm = () => {
                         onChange={(e) => {
                           const newOptions = [...currentQuestion.options];
                           newOptions[index] = e.target.value;
-                          setCurrentQuestion({ ...currentQuestion, options: newOptions });
+                          setCurrentQuestion({
+                            ...currentQuestion,
+                            options: newOptions,
+                          });
                         }}
                         className="form-input"
                         placeholder={`Option ${index + 1}`}
@@ -231,18 +293,47 @@ export const CreateGameForm = () => {
                   ))}
                 </div>
 
-                <div>
-                  <label className="form-label">Réponse correcte</label>
-                  <select
-                    value={currentQuestion.correctAnswer}
-                    onChange={(e) => setCurrentQuestion({ ...currentQuestion, correctAnswer: e.target.value })}
-                    className="form-select"
-                  >
-                    <option value="">Sélectionner la réponse correcte</option>
-                    {currentQuestion.options.map((option, index) => (
-                      option && <option key={index} value={option}>{option}</option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label">Réponse correcte</label>
+                    <select
+                      value={currentQuestion.correctAnswer}
+                      onChange={(e) =>
+                        setCurrentQuestion({
+                          ...currentQuestion,
+                          correctAnswer: e.target.value,
+                        })
+                      }
+                      className="form-select"
+                    >
+                      <option value="">Sélectionner la réponse correcte</option>
+                      {currentQuestion.options.map(
+                        (option, index) =>
+                          option && (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          )
+                      )}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="form-label">Niveau de la question</label>
+                    <select
+                      value={currentQuestion.level}
+                      onChange={(e) =>
+                        setCurrentQuestion({
+                          ...currentQuestion,
+                          level: e.target.value,
+                        })
+                      }
+                      className="form-select"
+                    >
+                      <option value="easy">Level 1</option>
+                      <option value="medium">Boss level</option>
+                    </select>
+                  </div>
                 </div>
 
                 <button
